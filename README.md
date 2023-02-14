@@ -5,7 +5,7 @@ This script fetches data from Google Calendar and calculates how many times you 
 ## Functionality
 This script fetches data from my calendar and calculates how much I should pay the gym based on the number of times I go. To achieve this, it does the following:
 
-- Searches my Google Calendar for events named "Gym."
+- Searches my Google Calendar for events named "Gym".
 - Prompts me to enter the starting and ending dates that I want to be included in the timeline of my exercises for which I need to pay.
 - Prompts me to enter the price per gym visit.
 - If it finds an event in my calendar named "Gym paid", it means I have paid up to this date. Therefore, the script resets the counter and starts counting again after this date.
