@@ -28,7 +28,9 @@ def main():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                'credentials.json', SCOPES) 
+                ##### ATTENTION for the first run, you should have your credentials.json in the same folder
+                #  that you run the script
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
@@ -37,14 +39,28 @@ def main():
     try:
         service = build('calendar', 'v3', credentials=creds)
 
-        # Get the calendar events in a particular timeline
+       # Get the calendar events in a particular timeline
         calendar_id = "primary" # Replace with the ID of your calendar
-        time_min_str = input("Enter the start time in the format 'DD-MM-YYYY': ")
-        time_max_str = input("Enter the end time in the format 'DD-MM-YYYY': ")
-        # I want it to be in Europe/Athens time
+        time_min_str = input("Enter the start time in the format 'DD-MM-YYYY' (or leave blank for beginning of year): ")
+        time_max_str = input("Enter the end time in the format 'DD-MM-YYYY' (or leave blank for current date): ")
+        
+        # To convert UTC to Europe/Athens time
         athens_tz = pytz.timezone('Europe/Athens')
+        # Set default values for time_min_str and time_max_str if they are blank
+        if not time_min_str:
+            default_start_date = datetime.datetime(datetime.datetime.now().year, 1, 1).astimezone(athens_tz)
+            time_min_str = default_start_date.strftime('%d-%m-%Y')
+        if not time_max_str:
+            current_date = datetime.datetime.now()
+            time_max_str = current_date.strftime('%d-%m-%Y')
+
+        
+
+        # Convert time_min_str and time_max_str to datetime objects in the Athens timezone
         time_min = datetime.datetime.strptime(time_min_str, '%d-%m-%Y').replace(tzinfo=pytz.utc).astimezone(athens_tz).strftime('%Y-%m-%dT00:00:00Z')
         time_max = datetime.datetime.strptime(time_max_str, '%d-%m-%Y').replace(tzinfo=pytz.utc).astimezone(athens_tz).strftime('%Y-%m-%dT23:59:59Z')
+        
+
         events_result = service.events().list(calendarId=calendar_id, timeMin=time_min, timeMax=time_max, singleEvents=True, orderBy="startTime").execute()
         events = events_result.get("items", [])
 
