@@ -1,15 +1,14 @@
 # GymCount
-This is a script that fetch data from Google Calendar and counts how many times I hit the gym and how much should I pay.
+This script fetches data from Google Calendar and calculates how many times you have gone to the gym within a specified time frame. It then uses the number of gym visits and a user-defined price per visit to calculate the total amount owed to the gym. 
 
 
 ## Functionality
-I pay the gym according to the amount of times I go. 
-This script fetch the data from my calendar and calcucate how much should I pay.
-To do this: 
-* It search in my Google Calendar event for events named "Gym"
-* Gets as input the starting date and the ending date that I want to be included in the timeline of my exercises that I need to pay.
-* Gets as input the price per visit to the gym.
-* If it found an event in my calendar named "Gym paid", it means I have paid till this date. So it resets the counter, and starting counting again after this date.
+This script fetches data from my calendar and calculates how much I should pay the gym based on the number of times I go. To achieve this, it does the following:
+
+- Searches my Google Calendar for events named "Gym."
+- Prompts me to enter the starting and ending dates that I want to be included in the timeline of my exercises for which I need to pay.
+- Prompts me to enter the price per gym visit.
+- If it finds an event in my calendar named "Gym paid", it means I have paid up to this date. Therefore, the script resets the counter and starts counting again after this date.
 
 
 ## Requirements
