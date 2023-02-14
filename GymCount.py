@@ -48,11 +48,29 @@ def main():
         events_result = service.events().list(calendarId=calendar_id, timeMin=time_min, timeMax=time_max, singleEvents=True, orderBy="startTime").execute()
         events = events_result.get("items", [])
 
-        # Count the number of occurrences of the gym event
-        gym_count = 0
+        # Find the gym paid event and reset gym_count
+        gym_paid_event_time = None
+        gym_paid_event_found = False
+        for event in events:
+            if event["summary"] == "Gym paid":
+                gym_paid_event_time = event["start"].get("dateTime", event["start"].get("date"))
+                gym_paid_event_time = datetime.datetime.fromisoformat(gym_paid_event_time).astimezone(athens_tz)
+                gym_paid_event_found = True
+                gym_count = 0
+                break
+
+        # If gym paid event was not found, start counting from the beginning of the time period
+        if not gym_paid_event_found:
+            gym_count = 0
+            gym_paid_event_time = datetime.datetime.strptime(time_min_str, '%d-%m-%Y').replace(tzinfo=athens_tz)
+
+        # Count the number of occurrences of the gym event after the gym paid event
         for event in events:
             if event["summary"] == "Gym":
-                gym_count += 1
+                event_time = event["start"].get("dateTime", event["start"].get("date"))
+                event_time = datetime.datetime.fromisoformat(event_time).astimezone(athens_tz)
+                if event_time >= gym_paid_event_time:
+                    gym_count += 1
 
         # Calculate the total amount to be paid for the gym
         gym_fee_per_visit = int(input("Price of visit to the gym: "))
